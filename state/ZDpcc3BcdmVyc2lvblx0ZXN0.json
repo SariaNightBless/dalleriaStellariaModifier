@@ -1,0 +1,157 @@
+{
+  "root": "D:\\sp\\version\\test",
+  "installedAt": "2026-10-11T08:33:48.850Z",
+  "loaderVersion": "1.0.0",
+  "copies": {
+    "public/js/mods.js": {
+      "after": "d49b9428ba2e308645f28fb6a362364309f0e3ccce0112d58261e0c67c889c4d"
+    },
+    "public/js/mods/assets.js": {
+      "after": "44a98fdcf4eea162cf2d4dde18acfe7617345e83839cadd4a7137535d659f04c"
+    },
+    "public/js/mods/content.js": {
+      "after": "58d8dc0d05dcb1ddaa5a5d3b60a18a92b57903fd8c25edd6abe3e8d1cdf8ad88"
+    },
+    "public/js/mods/resolve.js": {
+      "after": "82722ec3e8fc34f23deba01de19dee49d266a49fdc239666bf41a3d6a837e14a"
+    },
+    "public/js/mods/sim.js": {
+      "after": "2a9e2e40c9df5635ae4b68b0f2997806f0eb1cbcf0e9dedff5e9c763531ebd00"
+    },
+    "public/js/mods/tables.js": {
+      "after": "a644385df374f731fafda056c9339cae108848310613aac49a61b09ce9082727"
+    },
+    "public/js/mods/timing.js": {
+      "after": "c7b90b6e031e46550c3ec311cda14660eed341389a3211e39be24196a829f119"
+    },
+    "public/js/mods/ui.js": {
+      "after": "5de048f3951a105928fd011556a3df52065e58f9f3cc2d819ca5a0a4e7d8575c"
+    },
+    "public/mods.html": {
+      "after": "d8e2c593879933a6d8f6d5fd857aeda075be9b8954d97b9a59466bce33d6db59"
+    },
+    "public/css/sp-mods.css": {
+      "after": "1f0ea18281d1f8ffd373ca1e67d3bebfc378fd0cf972ecb1ea2d7c44df8b9fe3"
+    },
+    "public/js/ui/modsButton.js": {
+      "after": "5fc955ac1d11fb9d6fea53a8fbe421cef5d1510ad4a2b51637dd33247dec5b27"
+    },
+    "public/js/ui/modButtons.js": {
+      "after": "7c0b3669fb017da480fa2928088285e355c4721ccea4a360a78cbd8c490213e3"
+    },
+    "server/mods.js": {
+      "after": "caf302875d7047d6f56974e9a70a7308773f526eba9fb99bbc6ea76f9b026d20"
+    },
+    "server/modapi.js": {
+      "after": "da209ce37498faced84a1783e40b67c2e81047541d8b76caaabbc0de8b209ccb"
+    },
+    "server/loader.js": {
+      "after": "5371312d2684beb8ee776c602ee2030f958b02675b36de00a767474042fe4c43"
+    },
+    "server/manifest.js": {
+      "after": "1eb5e54146555d3b870ecf2a83e00dfbcec1b90558ceb1c57df4d896b59e6451"
+    },
+    "server/content.js": {
+      "after": "364e0da498f58a7f8024c33e6322b37fa87098edbf29838e3d396fc7f77a5524"
+    },
+    "server/mods-update.js": {
+      "after": "9cfd9cd10a721fe253c8c350e2d0863f1f6b93602e414f8a99748bd65e4892a8"
+    },
+    "server/match/botlogic.js": {
+      "after": "ac67f18b205e4463c41d757a3e3290f714bacece02b2413d79c22d19f0506b67"
+    },
+    "server/sim/modlogic.js": {
+      "after": "5ad78aaf1cde5ff11b3d773f2a6396f3bdba7b8c211d7d953705f2670af8d7af"
+    },
+    "shared/hooks.js": {
+      "after": "f7078a5dc62d59f187cdc4055ffedd0855228d7de3f17838e91a286443cee133"
+    },
+    "shared/content.js": {
+      "after": "596bcfe0a0152dacd2832af50c8afbe52a5e2038e74140fd9052fed14a8903bc"
+    },
+    "public/js/mods/render.js": {
+      "after": "e577c5fe9a2b879ce756e5ecd55a1754d8b25e64d4cee7ca1bd6634fbb18c143"
+    },
+    "public/js/mods/style.js": {
+      "after": "e174ec09636a48748edbe991a78106ae35c80fc4d5977ae71841db19c894ee34"
+    }
+  },
+  "patched": {
+    "public/js/main.js": {
+      "after": "9bfb8b7a1039c53baa36ba61ee176ace7128c5096d64e4b56002e15d2ab692ad",
+      "what": "首帧之前加载模组包（ui:button / api.ui / 内容包的前提）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/main.js"
+    },
+    "server/index.js": {
+      "after": "e02fe57f17daf254d8e1d767272312f643122c203867a582dadcc04853828832",
+      "what": "服务端启动顺序（先扫模组再读表）+ 把 modsDir / modsApi 交出去",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/server/index.js"
+    },
+    "server/http/static.js": {
+      "after": "72532bd3ac7e92f8e9ed963d776eba65d8bbdc4656bd62adc17dba2753a86ce9",
+      "what": "/mods/ 静态挂载（排在 / 之前）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/server/http/static.js"
+    },
+    "server/http/routes.js": {
+      "after": "b2b4c2690dae6613357f5d990e0598f0ffc6ba8b99152e18f55a6c9484445cf1",
+      "what": "/api/mods* 分发给修改器（在「非 GET/HEAD → 405」之前，否则 POST 端点全废）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/server/http/routes.js"
+    },
+    "public/js/screens/lobby.js": {
+      "after": "cb28bfb0b6ec5542641f0e1845cbe0e17752325c7fce59c0bceb432033746974",
+      "what": "顶栏的 ui:button 宿主（slot 'lobby.topbar'，位于干员调配与博士名片之间）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/screens/lobby.js"
+    },
+    "public/index.html": {
+      "after": "a14568b9e243c0aef9a53795bc8076403600cd4a195c2901410dc87446208dd8",
+      "what": "引入 sp-mods.css（管理器与模组按钮样式）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/index.html"
+    },
+    "public/js/render/app.js": {
+      "after": "77c944cc3f0b6ce4efaf85277c82ed84f55ddaa480fc719576edfb1202e46e22",
+      "what": "战场接缝 5 条：field:event / field:damage / field:viewGone / field:frame / field:overlay",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/render/app.js"
+    },
+    "public/js/render/fx/numbers.js": {
+      "after": "0a777d0cfc83661070d79a72a2fd66a9646531bba45dd81df26d077ae4b38771",
+      "what": "跳字接缝：field:damageNumber 的 kind: 'allow' 与 kind: 'text'（text / color / life / big）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/render/fx/numbers.js"
+    },
+    "public/js/render/units.js": {
+      "after": "6a499706b5f9a18e1fb8c22a82c8704b4bb0176e8085717b4525d0b7b2e12f39",
+      "what": "HUD 接缝（unitBars / enemyBars / chip）+ STYLE 旋钮（HUD/护盾/隐匿/受击闪/飞行/倒地/时钟盘面）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/render/units.js"
+    },
+    "server/sim/ai.js": {
+      "after": "2fbdf1aad9369cd057dc61a7347798ef09bc9b9836e62452c31a3c5dc844f97c",
+      "what": "修复一代接线留下的坏形状：ai.js 用了 simHas/simLogic 却没有 import（每次敌人攻击 ReferenceError）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/server/sim/ai.js"
+    },
+    "public/js/render/style.js": {
+      "after": "4bf6209f415e834d4e01ccebac708c178a80ea6f84c102dc38e05b32224e6f83",
+      "what": "STYLE 旋钮层：COLORS / UNIT 变成活对象 + 9 组旋钮面从 public/js/mods/style.js re-export",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/render/style.js"
+    },
+    "public/js/render/textures.js": {
+      "after": "50b36869559e7f06670b633570e1d50f63f4dc3aa5c143022277fd67fb32c3fe",
+      "what": "等级牌图集读 chip.* 旋钮（含 chip.textGoldTier：精锐牌数字保持该等级的 ink）+ 写旋钮即重画",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/render/textures.js"
+    },
+    "public/js/render/fx/fonts.js": {
+      "after": "0679c667cade0da6b62ad204ec529cddb64f382273c050b9fb19a4266bf7904a",
+      "what": "跳字字模读 dmg.* 旋钮（面栈 / 单色 / 描边 / 五档填充色）+ 新增 rebuildDamageFonts()",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/render/fx/fonts.js"
+    },
+    "public/js/render/fx.js": {
+      "after": "588af1d7e86ad34898c7b7bc76748d206027051130e9d5789ac56ea6907ec898",
+      "what": "barrel 转出 rebuildDamageFonts（fx/fonts.js 的新导出）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/render/fx.js"
+    },
+    "public/js/render/fx/system.js": {
+      "after": "1e21374d20748b0b15dc8353dcd43b16c4dcf58bb010bef296b3161ef8e9afc3",
+      "what": "FxSystem.rebuildDamageFonts()：转发给 fx/fonts.js 并丢掉在飞/池里的数字",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/render/fx/system.js"
+    }
+  },
+  "generated": []
+}

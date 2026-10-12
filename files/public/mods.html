@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>模组管理 · 卫戍协议：盟约</title>
+<link rel="stylesheet" href="/css/theme.css">
+<style>
+  :root { color-scheme: dark; }
+  /* WHY THE OVERRIDES: /css/theme.css is written for the game shell — a fixed, full-viewport app — and sets
+     `html, body { height: 100% }` plus `body { overflow: hidden }`. On this page that clips everything below the
+     first screen: the body was not a scroll container and the document had nothing to scroll, so with six or more
+     packages the rows past the fifth were simply unreachable. Put the plain document behaviour back here. */
+  html { height: auto; }
+  body { margin: 0; height: auto; min-height: 100vh; overflow: visible; background: #0d1211; color: #d8e3de;
+         font: 15px/1.6 "Noto Sans SC", system-ui, sans-serif; }
+  /* One centered column: the header text and <main> share the same 1100px track, so nothing hugs the left edge of a
+     wide screen. The header's bottom border still spans the full width. */
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  header { padding: 22px 28px 10px; border-bottom: 1px solid #22302b; }
+  h1 { margin: 0 0 4px; font-size: 22px; letter-spacing: 1px; }
+  h1 small { font-weight: 400; opacity: .5; font-size: 13px; letter-spacing: 0; }
+  header p { margin: 4px 0 0; opacity: .55; font-size: 13px; }
+  main { padding: 18px 28px 60px; max-width: 1100px; margin: 0 auto; }
+  .bar { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+  button { background: #16211d; color: #cfe6dd; border: 1px solid #2c3a35; border-radius: 6px;
+           padding: 6px 13px; font: inherit; font-size: 13px; cursor: pointer; }
+  button:hover { background: #1d2b26; border-color: #3d5149; }
+  button.danger:hover { border-color: #7a3030; color: #ffb3b3; }
+  button[disabled] { opacity: .4; cursor: default; }
+  .count { opacity: .5; font-size: 13px; margin-left: auto; }
+  #drop { border: 2px dashed #2c3a35; border-radius: 10px; padding: 26px; text-align: center;
+          opacity: .8; margin-bottom: 16px; transition: .15s; }
+  #drop.hot { border-color: #4ed8af; background: #12201c; opacity: 1; }
+  #drop b { color: #4ed8af; }
+  #drop code { background: #16211d; padding: 1px 6px; border-radius: 4px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid #1c2723; vertical-align: top; }
+  th { font-weight: 500; opacity: .5; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+  tr.off td { opacity: .45; }
+  tr.bad { background: #1d1414; }
+  .pill { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 11.5px; border: 1px solid; }
+  .pill.ok { color: #7be5b5; border-color: #2f6a52; }
+  .pill.bad { color: #ff9c8a; border-color: #7a3030; }
+  .pill.off { color: #9aa5a0; border-color: #3a4642; }
+  .pill.warn { color: #dac455; border-color: #6a5f2a; }
+  .sub { opacity: .55; font-size: 12.5px; }
+  .prob { color: #ff9c8a; font-size: 12.5px; }
+  .warn-t { color: #dac455; font-size: 12.5px; }
+  .acts { white-space: nowrap; }
+  .acts button { padding: 3px 9px; font-size: 12px; }
+  #log { margin-top: 16px; font: 12px/1.55 ui-monospace, Consolas, monospace; white-space: pre-wrap;
+         background: #101917; border: 1px solid #1c2723; border-radius: 8px; padding: 10px 12px; max-height: 200px; overflow: auto; }
+  a { color: #4ed8af; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>模组管理 <small>mod package manager</small></h1>
+    <p>把一个<strong>文件夹</strong>或 <strong>.zip</strong> 丢进服务器的 <code id="dirHint">mods/</code> 目录即可自动挂载（无需重启）；
+       也可以直接拖到下面的方框里上传。<a href="/">← 返回游戏</a></p>
+  </div>
+</header>
+<main>
+  <div id="drop">
+    <div>把 <b>.zip</b> 模组包拖到这里上传</div>
+    <div class="sub" style="margin-top:6px">文件夹请直接复制到 <code id="dirHint2">mods/</code>（浏览器无法上传整个文件夹）</div>
+    <input id="file" type="file" accept=".zip" hidden>
+    <div style="margin-top:10px"><button id="pick">选择文件…</button></div>
+  </div>
+  <div class="bar">
+    <button id="rescan">重新扫描</button>
+    <button id="reload">重新加载模组</button>
+    <span class="count" id="count"></span>
+  </div>
+  <table>
+    <thead><tr><th style="width:26%">模组</th><th style="width:10%">版本</th><th style="width:12%">类型</th>
+      <th style="width:10%">状态</th><th>说明 / 问题</th><th style="width:16%">操作</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <div id="log"></div>
+</main>
+<script type="module">
+import { loadMods, fetchMods, MOD_API } from '/js/mods.js';
+
+const $ = (id) => document.getElementById(id);
+const logLines = [];
+function log(msg, cls = '') {
+  const t = new Date().toLocaleTimeString();
+  logLines.unshift(`${t}  ${msg}`);
+  if (logLines.length > 60) logLines.pop();
+  $('log').innerHTML = logLines.map((l) => `<div class="${cls}">${l.replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' })[c])}</div>`).join('');
+}
+
+let current = { mods: [], revision: -1 };
+
+function pill(m) {
+  if (m.status !== 'ok') return '<span class="pill bad">无法挂载</span>';
+  if (!m.enabled) return '<span class="pill off">已禁用</span>';
+  return '<span class="pill ok">已启用</span>';
+}
+
+function render(list) {
+  current = list;
+  const mods = list.mods || [];
+  $('dirHint').textContent = `${list.dir}/`;
+  $('dirHint2').textContent = `${list.dir}/`;
+  $('count').textContent = `共 ${mods.length} 个包 · 已启用 ${mods.filter((m) => m.enabled && m.status === 'ok').length} · 修订 ${list.revision}`
+    + (list.loaderVersion ? ` · 加载器 v${list.loaderVersion}` : '');
+  const rows = mods.map((m) => {
+    const cls = m.status !== 'ok' ? 'bad' : (m.enabled ? '' : 'off');
+    const notes = [];
+    if (m.description) notes.push(`<div class="sub">${m.description}</div>`);
+    if (m.author) notes.push(`<div class="sub">作者：${m.author}</div>`);
+    if (m.provides?.bonds?.length) notes.push(`<div class="sub">盟约：${m.provides.bonds.join(', ')}</div>`);
+    if (m.provides?.kits?.length) notes.push(`<div class="sub">单位：${m.provides.kits.join(', ')}</div>`);
+    for (const p of m.problems || []) notes.push(`<div class="prob">✘ ${p}</div>`);
+    for (const w of m.warnings || []) notes.push(`<div class="warn-t">⚠ ${w}</div>`);
+    notes.push(`<div class="sub">${m.dir}</div>`);
+    const kind = m.clientOnly
+      ? '<span class="pill ok">仅客户端</span>'
+      : '<span class="pill warn" title="会改变战斗模拟：联机时对方也必须装，否则结果校验会不一致">需双方安装</span>';
+    const acts = [];
+    if (m.status === 'ok') acts.push(`<button data-act="${m.enabled ? 'disable' : 'enable'}" data-id="${m.id}">${m.enabled ? '禁用' : '启用'}</button>`);
+    acts.push(`<button class="danger" data-act="remove" data-id="${m.id}">删除</button>`);
+    return `<tr class="${cls}">
+      <td><strong>${m.name}</strong>${m.id !== m.name ? `<div class="sub">${m.id}</div>` : ''}</td>
+      <td>${m.version || '<span class="sub">—</span>'}</td>
+      <td>${kind}</td>
+      <td>${pill(m)}</td>
+      <td>${notes.join('')}</td>
+      <td class="acts">${acts.join(' ')}</td>
+    </tr>`;
+  });
+  $('rows').innerHTML = rows.join('') || '<tr><td colspan="6" class="sub" style="padding:22px">还没有装任何模组。把文件夹或 .zip 丢进 <code>mods/</code> 试试。</td></tr>';
+}
+
+async function refresh() {
+  try {
+    const list = await fetch(`/api/mods?t=${Date.now()}`, { cache: 'no-store' }).then((r) => r.json());
+    render(list);
+    return list;
+  } catch (e) { log(`✘ 读取列表失败：${e.message}`); return current; }
+}
+
+async function post(path, body, label) {
+  try {
+    const r = await fetch(path, { method: 'POST', body });
+    const out = await r.json().catch(() => ({}));
+    if (!r.ok || out.ok === false) { log(`✘ ${label}：${out.error || `HTTP ${r.status}`}`); }
+    else {
+      log(`✔ ${label}${out.folder ? ` → mods/${out.folder}/` : out.id ? ` → ${out.id}` : ''}`);
+      if (out.renamed) log(`   已替换旧目录：${out.renamed[0]}/ → ${out.renamed[1]}/`);
+    }
+    await refresh();
+    return out;
+  } catch (e) { log(`✘ ${label}：${e.message}`); return null; }
+}
+
+$('rows').addEventListener('click', async (ev) => {
+  const btn = ev.target.closest('button[data-act]');
+  if (!btn) return;
+  const { act, id } = btn.dataset;
+  if (act === 'remove' && !confirm(`确定删除模组「${id}」？这会从磁盘移除整个包。`)) return;
+  btn.disabled = true;
+  await post(`/api/mods/${act}/${encodeURIComponent(id)}`, null, `${act} ${id}`);
+  btn.disabled = false;
+});
+
+$('rescan').onclick = async () => { await post('/api/mods/rescan', null, '重新扫描'); };
+$('reload').onclick = async () => {
+  const r = await loadMods();
+  log(`重新加载：成功 ${r.ok.length}，失败 ${r.failed.length}，跳过 ${r.skipped.length}`);
+  if (r.failed.length) for (const f of r.failed) log(`  ✘ ${f.id}: ${f.error}`);
+  $('count').textContent += `  · 客户端已加载 ${r.ok.length}`;
+};
+$('pick').onclick = () => $('file').click();
+$('file').onchange = () => { if ($('file').files[0]) upload($('file').files[0]); $('file').value = ''; };
+
+async function upload(file) {
+  if (!/\.zip$/i.test(file.name)) { log(`✘ 只能上传 .zip（文件夹请直接复制到 mods/）`); return; }
+  log(`上传 ${file.name}（${(file.size / 1024).toFixed(1)} KB）…`);
+  await post('/api/mods/upload', file, `上传 ${file.name}`);
+}
+
+const drop = $('drop');
+for (const ev of ['dragenter', 'dragover']) drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('hot'); });
+for (const ev of ['dragleave', 'drop']) drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('hot'); });
+drop.addEventListener('drop', (e) => {
+  const f = e.dataTransfer?.files?.[0];
+  if (!f) return;
+  if (/\.zip$/i.test(f.name)) upload(f);
+  else log(`✘ ${f.name} 不是 .zip；文件夹请直接复制到 mods/（浏览器拿不到目录内容）`);
+});
+
+$('count').textContent = `模组 API v${MOD_API}`;
+await refresh();
+log(`就绪。模组 API v${MOD_API}。丢包进 ${current.dir || 'mods/'} 即可自动挂载。`);
+// 文件系统里直接丢包时页面也能看到（上传走 API 不需要轮询，这里只补"拖进文件夹"的情况）
+setInterval(async () => {
+  const list = await fetch('/api/mods', { cache: 'no-store' }).then((r) => r.json()).catch(() => null);
+  if (list && list.revision !== current.revision) {
+    render(list);
+    log(`检测到变化（修订 ${current.revision} → ${list.revision}）：${list.mods.length} 个包`);
+  }
+}, 2500);
+</script>
+</body>
+</html>

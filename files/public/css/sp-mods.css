@@ -1,0 +1,43 @@
+/* sp-mods.css — 模组包管理器的样式（标题页按钮 + 房间页的不匹配提示）。
+ *
+ * ⚠️ 刻意不用 color-mix() 等新语法：Safari < 16.2 会静默丢弃整条声明。
+ * 只引用 theme.css 里已有的变量（--mint-400 / --gold / --line-2），其余用 rgba。
+ */
+
+/* ---- 标题页的「模组」按钮 ---- */
+.title-mods { position: relative; }
+.title-mods__n {
+  margin-left: .04rem; padding: 0 .05rem; border-radius: .08rem; font-size: .11rem;
+  background: rgba(78, 216, 175, .24);
+  color: var(--mint-400);
+}
+.title-mods__bad {
+  margin-left: .03rem; padding: 0 .05rem; border-radius: .08rem; font-size: .11rem; font-weight: 700;
+  background: rgba(255, 60, 60, .3);
+  color: #ffd0d0;
+}
+
+/* ---- 模组贡献的顶栏按钮（ui:button 的调用点，js/ui/modButtons.js） ----
+ * 按钮本身是游戏自己的 .btn（分量、配色都跟旁边的「玩法说明」一致），这里只管它在顶栏里的间距与换行。
+ */
+.mod-btn { flex: none; }
+.lobby-modbtns { flex: none; }
+.title-modbtns { flex: none; }
+
+/* ---- 房间页的折叠提示：一行，点开才看详情 ---- */.modmm { margin: 0 0 .12rem; border: 1px solid var(--line-2); border-radius: .08rem; overflow: hidden; }
+.modmm__bar {
+  display: flex; align-items: center; gap: .08rem; width: 100%; padding: .08rem .12rem;
+  background: rgba(255, 198, 0, .1);
+  border: 0; color: inherit; font: inherit; font-size: .13rem; text-align: left; cursor: pointer;
+}
+.modmm__bar:hover { background: rgba(255, 198, 0, .16); }
+.modmm__dot { width: .07rem; height: .07rem; border-radius: 50%; background: var(--gold); flex: none; }
+.modmm__sub { opacity: .6; font-size: .12rem; }
+.modmm__chev { margin-left: auto; opacity: .7; font-size: .12rem; }
+.modmm__body { padding: .1rem .12rem .12rem; border-top: 1px solid var(--line-2); font-size: .125rem; }
+.modmm__note { margin: 0 0 .08rem; opacity: .72; line-height: 1.6; }
+.modmm__t { width: 100%; border-collapse: collapse; }
+.modmm__t th, .modmm__t td { text-align: left; padding: .04rem .08rem; border-bottom: 1px solid var(--line-2); }
+.modmm__t th { opacity: .5; font-weight: 500; font-size: .115rem; }
+.modmm__t tr.is-off td { color: var(--gold); }
+.modmm__acts { margin-top: .1rem; }
