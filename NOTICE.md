@@ -2,7 +2,7 @@
 
 ## 本包
 
-**dalleriaStellariaModifier** —— 《卫戍协议：盟约》的模组加载器，版本 **1.0.0**。
+**dalleriaStellariaModifier** —— 《卫戍协议：盟约》的模组加载器，版本 **1.1.0**（面向上游 **0.2.4**）。
 
 以 **GNU GPL-3.0-or-later** 发布，全文见 [LICENSE](LICENSE)。
 
@@ -23,66 +23,70 @@
 
 依据 GPL-3.0 §5(a)，以下列出本包对上游文件所做的全部改动。
 
-### 1.1 打了补丁的上游文件（22 个文件，36 条补丁）
+### 1.1 打了补丁的上游文件（28 个文件，28 条补丁）
 
-安装时由 `install-patches.js` 现场改写。每条补丁的完整实现、幂等判据（`once`）与手工插入片段都在该文件里。
+安装时由 `install.mjs` 现场改写，安装前把原文备份进 `state/backup/`，`--undo` 逐字节还原。
+**权威清单是 `catalog.mjs` 的 `THEIRS`（文件 → 补丁 id，一对一）与 `patches.mjs` 的 `PATCHES`**；README §3 有逐条说明
+（每条含 `what` / `once` / `apply` / `manual`）。
 
-| 文件 | 补丁数 | 改动内容 |
+| 文件 | 补丁 id | 改动内容（一句话） |
 |---|---|---|
-| `public/index.html` | 2 | 引入管理器样式表<br>引入槽位样式表（sp-mods-slots.css） |
-| `public/js/assets.js` | 1 | 干员美术清单可扩展（内容包自带 spine / 头像 / 半身像 / 盟约与策略图标） |
-| `public/js/battle/runner.js` | 1 | 客户端 sim 模组（extraContent）+ battleStart / battleEnd 通知 |
-| `public/js/main.js` | 2 | 启动模组加载器（首次渲染之前）<br>整局结算通知模组（`api.on('matchResult')`） |
-| `public/js/screens/game.js` | 2 | 把"正在观战的那个玩家"传给 TopBar（顶部 LP 塔据此显示队友的生命）<br>横幅时长 / 改写 / 抑制（`api.ui.banner` + timing 表） |
-| `public/js/screens/loadout.js` | 1 | 干员调配的 `ui:slot` 接缝（slot `loadout.actions`） |
-| `public/js/screens/lobby.js` | 1 | `ui:button` 调用点（选择模拟协议顶栏接纳模组按钮） |
-| `public/js/screens/title.js` | 2 | 标题页「玩法说明」旁的模组管理按钮<br>标题页的 `ui:button` 宿主（slot `title.actions`） |
-| `public/js/ui/fieldHost.js` | 1 | field view 就绪时通知模组（`api.ready`） |
-| `public/js/ui/hud.js` | 1 | 观战时顶部 LP 塔显示队友的生命（`topBarLp` 纯函数 + TopBar 的 `watchP` 参数） |
-| `server/data.js` | 1 | 内容包数据入口（`getData` 读到合并后的表） |
-| `server/index.js` | 2 | 启动顺序（先扫模组 → 合并内容 → 加载 sim 模块）+ `/api/mods/status\|updates\|content`<br>模组目录的记账文件不进静态服务（`mods/mods.cache.json`） |
-| `server/match/bot.js` | 1 | AI 决策接缝（`bot:bandWeights` / `bot:cardScore` / `bot:bondPlan` / `bot:buyScore` / `bot:refreshValue` / `bot:lineupScore` / `bot:layoutParams` / `bot:rehearsal` + `botParam` 旋钮）；无模组时逐次决策不变 |
-| `server/match/effectsMeta.js` | 1 | prep 效果注册表开一个模组扩展点（策略 / 盟约的机制入口） |
-| `server/sim/Battle.js` | 3 | 模拟接缝（`sim:enemyAI` / `sim:unitTick` / `sim:battleEnd`）<br>快照带上屏障数值<br>生成敌人时把攻击动画时长 / 出手帧带给单位 |
-| `server/sim/ai.js` | 4 | 阻挡两规则：候选表最终顺序（`sim:targetOrder`）与这一挥的攻击形态（`sim:attackMode`）<br>干员攻击可按出手帧结算（`sim:strikeDelay`）<br>敌人攻击也可按出手帧结算<br>攻击接缝：候选目标值透传（`sim:targets`）+ 每目标伤害倍率（`sim:attack`） |
-| `server/sim/content/enemies.js` | 1 | "解压"生成的子代不计入敌人总数（`x/y` 的 `y`） |
-| `server/sim/damage.js` | 1 | 模拟接缝（`sim:damage`：命中前的数值 / 类型可改） |
-| `server/sim/simdata.js` | 2 | 敌人数据的攻击动画时长 / 出手帧可读<br>干员数据的攻击动画时长 / 出手帧可读 |
-| `server/sim/snapshot.js` | 3 | 快照带上屏障数值<br>快照的 ATTACK 窗口走模拟钩子（`simAttackWindow`）<br>快照带上模拟的攻击节奏 |
-| `server/sim/spec.js` | 1 | `spec → Battle` 透传 `extraContent`（行为模组的正门） |
-| `tools/build-data.mjs` | 2 | 敌人 / 干员数据带上攻击动画时长与出手帧（`attackAnimTime` / `attackStrikeAt`） |
+| `public/index.html` | `stylesheets` | 引入 `sp-mods.css`（`ui:slot` 的两条规则也在这一份里） |
+| `public/js/main.js` | `boot` | 首帧之前加载模组包 |
+| `public/js/assets.js` | `assets-provider` | `setModAssetProvider()`：内容包贡献的立绘 / Spine 合进清单查询 |
+| `public/js/battle/runner.js` | `sim-extracontent-client` | 页面自己模拟的那一场也带上行为模块（`extraContent`） |
+| `public/js/screens/lobby.js` | `lobby-buttons` | 顶栏的 `ui:button` 宿主 |
+| `public/js/screens/title.js` | `title-buttons` | 标题页「模组」按钮 + `ui:button` 宿主 |
+| `public/js/ui/fieldHost.js` | `field-ready` | 战场视图就绪 → `notifyReady(view)`（`api.ready` / `on('ready')`） |
+| `public/js/render/app.js` | `render-app-hooks` | `field:event` / `field:damage` / `field:viewGone` / `field:frame` / `field:overlay` |
+| `public/js/render/units.js` | `render-unit-hud` | HUD 接缝（`field:unitBars` / `enemyBars` / `chip`）+ `field:unitMotion` + `field:attack` 的**宣布**（1.1.0）+ STYLE 旋钮读点 |
+| `public/js/render/spine.js` | `render-attack-plan` | `field:attack` 的**计划**（1.1.0）：`windUp` / `attack` 各一处，答案 `start` / `timeScale` / `ts` / `once` / `hold` / `rephase` |
+| `public/js/render/style.js` | `style-knobs` | `COLORS` / `UNIT` 变成活对象 + 文件尾 re-export 9 组旋钮面 |
+| `public/js/render/textures.js` | `style-chip` | 等级牌图集读 `chip.*` 旋钮（含 `chip.textGoldTier`）+ 写旋钮即重画 |
+| `public/js/render/fx.js` | `style-dmg-rebuild` | barrel 转出 `rebuildDamageFonts` |
+| `public/js/render/fx/numbers.js` | `render-damage-number` | `field:damageNumber` 的 `kind: 'allow'` 与 `kind: 'text'` |
+| `public/js/render/fx/fonts.js` | `style-dmg` | 跳字字模读 `dmg.*` 旋钮 + 新增 `rebuildDamageFonts()` |
+| `public/js/render/fx/system.js` | `style-dmg-system` | `FxSystem.rebuildDamageFonts()`（模组够得着） |
+| `server/index.js` | `server-boot` | 启动顺序（先扫包 → 合并内容 → 加载行为模块）+ `/api/mods*` |
+| `server/http/static.js` | `static-mount` | `/mods/` 静态挂载（排在 `/` 之前） |
+| `server/http/routes.js` | `api-route` | `/api/mods*` 分发（落在「非 GET/HEAD → 405」之前） |
+| `server/data.js` | `data-merges` | `getData()` 的默认目录 = 内容包合并后的 `.cache/mods/data` |
+| `server/match/bot.js` | `bot-seams` | AI 决策接缝（`bot:params` / `bandWeights` / `cardScore` / `bondPlan` / `buyScore` / `itemScore` / `refreshValue` / `lineupScore` / `layoutParams` / `rehearsal`） |
+| `server/match/effectsMeta.js` | `meta-installer` | 策略 / 盟约 / 特质 / 装备注册表接缝（`globalThis.__SP_MODS_META__`） |
+| `server/match/match/clientCombat.js` | `sim-extracontent-server` | 服务端跑的每一场（接管重算 / 校验）也带上行为模块 |
+| `server/sim/ai.js` | `sim-ai-hooks` | `sim:enemyAI` / `sim:targets` / `sim:targetOrder` / `sim:attackMode`（我方 + 敌人）/ `sim:attack` / `sim:strikeDelay` |
+| `server/sim/battle/lifecycle.js` | `sim-battle-hooks` | `sim:battleStart` / `sim:unitTick` / `sim:battleEnd` |
+| `server/sim/damage.js` | `sim-damage` | `sim:damage` —— 每次进入主管线的命中（可改 `dmg.mul` / `amount` / `type`，或取消） |
+| `server/sim/snapshot.js` | `sim-snapshot` | `sim:attackRhythm`（`flags` 16…31 位的攻击节奏）+ `sim:attackAnim`（ATTACK 窗口） |
+| `server/sim/spec.js` | `sim-content` | `spec → Battle` 透传 `extraContent`（行为模组的正门） |
 
-这些补丁在**无模组时保持上游行为**：所有调用点都以「有没有模组注册」为守卫，没有模组逐帧、逐字节与上游一致。补丁的幂等判据检查文件的实际内容而非日志，因此可以重复安装。
+这些补丁在**无模组时保持上游行为**：所有调用点都以「有没有模组注册」为守卫，没有模组时逐帧、逐字节与上游一致
+（计划型接缝的未注册路径**不分配任何对象**）。补丁的幂等判据检查文件的实际内容（"接线后的形状"）而非日志，因此可以
+重复安装；`once` 判据同时拒绝第一代覆盖层留下的坏形状，避免"装过旧版的实例被判成已装好"。
 
-### 1.2 整层替换的渲染层（22 个文件）
+### 1.2 本包**不再**整层替换任何上游文件
 
-`public/js/render/**` 下的文件被本包的改写版整体覆盖：
-
-```
-app.js  boardArt.js  drag.js  fx.js  impostor.js  interp.js  pen.js  pick.js
-prepfield.js  projection.js  promote.js  spine.js  style.js  textures.js
-tiles.js  units.js  board3d/{atlas,layout,load,materials,obj,scene}.js
-```
-
-改写的目的是把原先写死在渲染代码里的外观数值（配色、条带几何、等级牌画法、跳字样式…）变成运行时可写的旋钮（`STYLE`，9 组 78 个键）。**默认值全部等于上游**，所以没有模组时画面与上游一致；安装器的 `--verify` 每次逐键核对这一点。
-
-`upstream/style.js` 与 `upstream/textures.js` 是这两份文件的上游原始版本，随包分发**仅用于上述核对**。
+第一代曾经把改过的渲染层拷贝（`public/js/render/**` 等 22 个文件）整体覆盖上去。上游 0.2.4 重构了渲染层之后，
+那些拷贝同时变成"过期"与"语义撞车"（`server/update.js` 是典型：上游要 `applyUpdate`，旧拷贝是包下载器），
+于是第二代把这条整个删掉：**渲染层保持上游 0.2.4 原件**，只打上面 1.1 表里的接线；外观旋钮的默认值逐键等于上游
+（`--verify` 每次核对）。`catalog.mjs` 开头记录了这个决定，安装器对 `FORBIDDEN_OVERWRITE` 里的名字直接拒绝。
 
 ## 二、本包新增的文件（24 个）
 
-游戏原本没有这些文件，由安装器新增。它们**不是**对上游文件的修改：
+游戏原本没有这些文件，由安装器新增（权威清单：`catalog.mjs` 的 `OURS`）。它们**不是**对上游文件的修改：
 
 ```
-server/mods.js  server/manifest.js  server/update.js  server/content.js
-server/loader.js  server/modapi.js           模组管理器（服务端）
-server/sim/modlogic.js                        模拟侧钩子注册表
-server/match/botlogic.js                      AI 决策侧钩子注册表
-public/mods.html                             管理页面
-public/css/sp-mods.css  public/css/sp-mods-slots.css
-public/js/ui/modsButton.js  public/js/ui/modButtons.js
-public/js/mods.js  public/js/mods/{resolve,ui,content,tables,timing,sim,assets}.js
+public/mods.html                              管理页面
+public/css/sp-mods.css                        管理器与槽位的样式
+public/js/mods.js                             页面侧加载器入口（main.js 只 import 它）
+public/js/mods/{render,style,timing}.js       渲染接缝实现 / 外观旋钮引擎（9 组 82 键）/ 时序与跳字表
+public/js/mods/{resolve,ui,content,tables,sim,assets}.js    api 表面、内容包、行为模块、美术注册
+public/js/ui/{modsButton,modButtons}.js       标题页那颗「模组」按钮 + ui:button 渲染器
+server/mods.js  server/manifest.js  server/loader.js  server/modapi.js
+server/content.js  server/mods-update.js      模组管理器（服务端；包下载器叫 mods-update，别与上游的 update.js 混）
+server/sim/modlogic.js                        模拟侧钩子注册表（sim:*，被页面经 /sim/ 只读共享）
+server/match/botlogic.js                      AI 决策侧钩子注册表（bot:*）
 shared/hooks.js  shared/content.js            钩子注册表与内容包合并规则（页面与服务端共用）
-public/dev/render-demo.js                     开发用页面（用同一套加载器预览渲染层）
 ```
 
 安装时还会生成 `mods/README.md` 与 `state/`（安装记录）。`state/` 只存在于本机，不随包分发。

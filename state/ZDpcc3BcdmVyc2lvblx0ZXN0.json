@@ -31,7 +31,7 @@
       "after": "d8e2c593879933a6d8f6d5fd857aeda075be9b8954d97b9a59466bce33d6db59"
     },
     "public/css/sp-mods.css": {
-      "after": "1f0ea18281d1f8ffd373ca1e67d3bebfc378fd0cf972ecb1ea2d7c44df8b9fe3"
+      "after": "553d5ed9bc744a8f8bacd23df6742f6576121cc32a317e363f7166852553f22f"
     },
     "public/js/ui/modsButton.js": {
       "after": "5fc955ac1d11fb9d6fea53a8fbe421cef5d1510ad4a2b51637dd33247dec5b27"
@@ -58,7 +58,7 @@
       "after": "9cfd9cd10a721fe253c8c350e2d0863f1f6b93602e414f8a99748bd65e4892a8"
     },
     "server/match/botlogic.js": {
-      "after": "ac67f18b205e4463c41d757a3e3290f714bacece02b2413d79c22d19f0506b67"
+      "after": "e575ccf994676cf8c0e36892c8d6389e54dde5b21b264b429a9c47201c1c1b4d"
     },
     "server/sim/modlogic.js": {
       "after": "5ad78aaf1cde5ff11b3d773f2a6396f3bdba7b8c211d7d953705f2670af8d7af"
@@ -70,7 +70,7 @@
       "after": "596bcfe0a0152dacd2832af50c8afbe52a5e2038e74140fd9052fed14a8903bc"
     },
     "public/js/mods/render.js": {
-      "after": "e577c5fe9a2b879ce756e5ecd55a1754d8b25e64d4cee7ca1bd6634fbb18c143"
+      "after": "ab8691846e94f1e4e3f886c6b52ca7db1c3732b00b2db731538b2785d463206d"
     },
     "public/js/mods/style.js": {
       "after": "e174ec09636a48748edbe991a78106ae35c80fc4d5977ae71841db19c894ee34"
@@ -118,13 +118,13 @@
       "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/render/fx/numbers.js"
     },
     "public/js/render/units.js": {
-      "after": "6a499706b5f9a18e1fb8c22a82c8704b4bb0176e8085717b4525d0b7b2e12f39",
-      "what": "HUD 接缝（unitBars / enemyBars / chip）+ STYLE 旋钮（HUD/护盾/隐匿/受击闪/飞行/倒地/时钟盘面）",
+      "after": "c60915952336361933f72ca0bb7285fc96e6f6cde11a6f060dfcf49078164609",
+      "what": "HUD 接缝（unitBars / enemyBars / chip + unitMotion）+ STYLE 旋钮（HUD/护盾/隐匿/受击闪/飞行/倒地/时钟盘面）",
       "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/render/units.js"
     },
     "server/sim/ai.js": {
-      "after": "2fbdf1aad9369cd057dc61a7347798ef09bc9b9836e62452c31a3c5dc844f97c",
-      "what": "修复一代接线留下的坏形状：ai.js 用了 simHas/simLogic 却没有 import（每次敌人攻击 ReferenceError）",
+      "after": "8ae7b9a3213de7c1cde6ac1b7d4b6e789ac1258fc18c377dd61cea18f4614817",
+      "what": "AI 接缝 6 条：sim:enemyAI / sim:targets / sim:targetOrder / sim:attackMode（我方+敌人）/ sim:attack / sim:strikeDelay",
       "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/server/sim/ai.js"
     },
     "public/js/render/style.js": {
@@ -133,7 +133,7 @@
       "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/render/style.js"
     },
     "public/js/render/textures.js": {
-      "after": "50b36869559e7f06670b633570e1d50f63f4dc3aa5c143022277fd67fb32c3fe",
+      "after": "ed689beee86f8c06ea5843f225c9baf2d0a4d94890a7ec7e8ee186eb3e4aa769",
       "what": "等级牌图集读 chip.* 旋钮（含 chip.textGoldTier：精锐牌数字保持该等级的 ink）+ 写旋钮即重画",
       "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/render/textures.js"
     },
@@ -148,9 +148,69 @@
       "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/render/fx.js"
     },
     "public/js/render/fx/system.js": {
-      "after": "1e21374d20748b0b15dc8353dcd43b16c4dcf58bb010bef296b3161ef8e9afc3",
+      "after": "29164fb4a34d66a443caa3c8a783da1178288042a98bc5242d41df2a60858689",
       "what": "FxSystem.rebuildDamageFonts()：转发给 fx/fonts.js 并丢掉在飞/池里的数字",
       "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/render/fx/system.js"
+    },
+    "server/sim/battle/lifecycle.js": {
+      "after": "ecd8b5864957610000413d54f889f16fabad7e37cef7c27d86f56e4033df42b0",
+      "what": "战斗生命周期接缝：sim:battleStart / sim:unitTick（双方，每 tick）/ sim:battleEnd",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/server/sim/battle/lifecycle.js"
+    },
+    "server/sim/damage.js": {
+      "after": "2154e517e1fdccda4fba90ff20bb0f8461e4a30c0b2231639d771c5e7afe2dd3",
+      "what": "伤害接缝：sim:damage（每一次进入主管线的命中，可改 dmg.mul / amount / type，或 dmg.cancel 取消）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/server/sim/damage.js"
+    },
+    "server/sim/snapshot.js": {
+      "after": "56445853f792b2c831fd1b9c5b0166bf713727e63207d1432febcfc8ac7982a7",
+      "what": "快照接缝：sim:attackRhythm（flags 16…31 位的攻击节奏）+ sim:attackAnim（ATTACK 窗口长度）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/server/sim/snapshot.js"
+    },
+    "server/sim/spec.js": {
+      "after": "0a97fedacf1b7683ac11757c5fd87b28944d1e9a2f27c4196b0871f599c05afe",
+      "what": "行为模组的正门：spec → Battle 透传 extraContent（installContent 会 install(battle) 每一个）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/server/sim/spec.js"
+    },
+    "server/match/match/clientCombat.js": {
+      "after": "73852c9ff4a702a8c4d049ed8a4110be5c394a3280c0d79e16a32c845763bda3",
+      "what": "服务端跑的每一场（接管重算 / 校验）也拿到行为模组的 sim 模块（否则两边的 resultDigest 不一致）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/server/match/match/clientCombat.js"
+    },
+    "public/js/battle/runner.js": {
+      "after": "5f88dbfac79d2a66bd7135afc1bea47d757c139468a53527fe9e95c97faf619b",
+      "what": "页面自己模拟的那一场也拿到行为模组的 sim 模块（页面 import /sim/**，与服务器各注册一次）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/battle/runner.js"
+    },
+    "server/data.js": {
+      "after": "9a2f4f05eaf7e068f23fc477ead87eaa58392482d544b52fd6ef546737ce217f",
+      "what": "内容包合并目录成为 getData() 的默认（server/loader.js 的文件头就是照这条写的）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/server/data.js"
+    },
+    "server/match/effectsMeta.js": {
+      "after": "6b13d6c504c3312ebb41d273b59533e1cad52889fa4974d67823c600c54600e1",
+      "what": "策略 / 盟约 / 特质 / 装备 的注册表接缝（globalThis.__SP_MODS_META__，每次 createRegistry 都问一次）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/server/match/effectsMeta.js"
+    },
+    "public/js/assets.js": {
+      "after": "ea5d004e065d75cc392f91ce64cfa2b669831a902b6714fc8c8a0657684fc289",
+      "what": "美术门：setModAssetProvider()（内容包贡献的立绘 / Spine 合进 manifest 查询；游戏自己的条目永远优先）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/assets.js"
+    },
+    "public/js/ui/fieldHost.js": {
+      "after": "d26e1bd65ce768e090212df6635122541ab60b4300460363884ec2df120b62ac",
+      "what": "战场视图就绪的通知（api.ready / api.on('ready') 的前提）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/ui/fieldHost.js"
+    },
+    "public/js/screens/title.js": {
+      "after": "0f87ba5e3dafa51623145b7fcde6672b0ad2d508599897a101cc4843c3bcf83a",
+      "what": "标题页的「模组」按钮（打开 /mods.html）+ ui:button 宿主（slot 'title.actions'）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/public/js/screens/title.js"
+    },
+    "server/match/bot.js": {
+      "after": "ac4a73376c88b612f6246ec6305953cca50f8457f46731c0b1ee39dc01559f80",
+      "what": "AI 决策接缝：bot:params / bandWeights / cardScore / bondPlan / buyScore / itemScore / refreshValue / lineupScore / layoutParams / rehearsal + botParam 旋钮",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblx0ZXN0/server/match/bot.js"
     }
   },
   "generated": []

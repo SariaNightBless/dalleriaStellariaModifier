@@ -1,0 +1,81 @@
+{
+  "root": "D:\\spModifierCreatingArea\\_scratch\\v2-clean",
+  "installedAt": "2026-10-12T11:02:33.758Z",
+  "loaderVersion": "1.0.0",
+  "copies": {
+    "public/js/mods.js": {
+      "after": "d49b9428ba2e308645f28fb6a362364309f0e3ccce0112d58261e0c67c889c4d"
+    },
+    "public/js/mods/assets.js": {
+      "after": "44a98fdcf4eea162cf2d4dde18acfe7617345e83839cadd4a7137535d659f04c"
+    },
+    "public/js/mods/content.js": {
+      "after": "58d8dc0d05dcb1ddaa5a5d3b60a18a92b57903fd8c25edd6abe3e8d1cdf8ad88"
+    },
+    "public/js/mods/render.js": {
+      "after": "ab8691846e94f1e4e3f886c6b52ca7db1c3732b00b2db731538b2785d463206d"
+    },
+    "public/js/mods/resolve.js": {
+      "after": "82722ec3e8fc34f23deba01de19dee49d266a49fdc239666bf41a3d6a837e14a"
+    },
+    "public/js/mods/sim.js": {
+      "after": "2a9e2e40c9df5635ae4b68b0f2997806f0eb1cbcf0e9dedff5e9c763531ebd00"
+    },
+    "public/js/mods/style.js": {
+      "after": "e174ec09636a48748edbe991a78106ae35c80fc4d5977ae71841db19c894ee34"
+    },
+    "public/js/mods/tables.js": {
+      "after": "a644385df374f731fafda056c9339cae108848310613aac49a61b09ce9082727"
+    },
+    "public/js/mods/timing.js": {
+      "after": "c7b90b6e031e46550c3ec311cda14660eed341389a3211e39be24196a829f119"
+    },
+    "public/js/mods/ui.js": {
+      "after": "5de048f3951a105928fd011556a3df52065e58f9f3cc2d819ca5a0a4e7d8575c"
+    },
+    "public/mods.html": {
+      "after": "d8e2c593879933a6d8f6d5fd857aeda075be9b8954d97b9a59466bce33d6db59"
+    },
+    "public/css/sp-mods.css": {
+      "after": "553d5ed9bc744a8f8bacd23df6742f6576121cc32a317e363f7166852553f22f"
+    },
+    "public/js/ui/modsButton.js": {
+      "after": "5fc955ac1d11fb9d6fea53a8fbe421cef5d1510ad4a2b51637dd33247dec5b27"
+    },
+    "public/js/ui/modButtons.js": {
+      "after": "7c0b3669fb017da480fa2928088285e355c4721ccea4a360a78cbd8c490213e3"
+    },
+    "server/mods.js": {
+      "after": "caf302875d7047d6f56974e9a70a7308773f526eba9fb99bbc6ea76f9b026d20"
+    },
+    "server/modapi.js": {
+      "after": "da209ce37498faced84a1783e40b67c2e81047541d8b76caaabbc0de8b209ccb"
+    },
+    "server/loader.js": {
+      "after": "5371312d2684beb8ee776c602ee2030f958b02675b36de00a767474042fe4c43"
+    },
+    "server/manifest.js": {
+      "after": "1eb5e54146555d3b870ecf2a83e00dfbcec1b90558ceb1c57df4d896b59e6451"
+    },
+    "server/content.js": {
+      "after": "364e0da498f58a7f8024c33e6322b37fa87098edbf29838e3d396fc7f77a5524"
+    },
+    "server/mods-update.js": {
+      "after": "9cfd9cd10a721fe253c8c350e2d0863f1f6b93602e414f8a99748bd65e4892a8"
+    },
+    "server/match/botlogic.js": {
+      "after": "e575ccf994676cf8c0e36892c8d6389e54dde5b21b264b429a9c47201c1c1b4d"
+    },
+    "server/sim/modlogic.js": {
+      "after": "5ad78aaf1cde5ff11b3d773f2a6396f3bdba7b8c211d7d953705f2670af8d7af"
+    },
+    "shared/hooks.js": {
+      "after": "f7078a5dc62d59f187cdc4055ffedd0855228d7de3f17838e91a286443cee133"
+    },
+    "shared/content.js": {
+      "after": "596bcfe0a0152dacd2832af50c8afbe52a5e2038e74140fd9052fed14a8903bc"
+    }
+  },
+  "patched": {},
+  "generated": []
+}

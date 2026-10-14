@@ -233,3 +233,50 @@ export function overlay(ctx, cam, clock, dt, mode, layers, views, fx, tiles, bat
     hooks.emit('field:overlay', { ctx, cam, clock, dt, mode, battleId, layers, views, fx, tiles });
   } catch { /* idem */ }
 }
+
+// ---------------------------------------------------------------------------------------------------------------
+// field:unitMotion — where ONE unit's body and shadow are drawn, and which way it faces
+
+/**
+ * `field:unitMotion` (`render/units.js` `UnitView.update`): the body placement of one unit view, asked once per rendered
+ * frame **after** the shipped values are computed (`z` / `hover` / `lift` easing) and **before** the body is placed.
+ *
+ * A handler answers with any of:
+ *   `{ bodyZ }`    the world height the body is drawn at. The shipped value is `view.z + view.hover + view.lift`, and
+ *                  `view.z` is the tile top under the unit — so a crate or a raised tile raises a flying unit too. A
+ *                  package that wants a flyer to float at an altitude of its own answers this and the tile stops mattering.
+ *   `{ screenX }`  the horizontal anchor, when the projected raised point would be dragged sideways by the tilted camera.
+ *   `{ face }`     the sprite flip (±1), or `0` / absent to let `view.visFacing` govern.
+ *   `{ shadowZ }`  the world height the shadow is dropped to. The shipped value is the tile top (`view.shadowZ ?? view.z`);
+ *                  a flyer whose body owns an altitude answers the surface below it instead.
+ *
+ * TWO RULES, both from the legacy contract (`field:unitMotion` in v1):
+ *   · `undefined` (a key the handler did not write) means "keep the shipped value"; **`null` is a real answer** for
+ *     `shadowZ` ("drop it to the tile"), so the call site must not read `null` as "no answer" — that is why the call site
+ *     checks `Number.isFinite` for it and this function never invents a value.
+ *   · `ctx.scratch` is the CHAIN NOTE: a mutable object shared by every handler of this one call, pre-filled with "no
+ *     answer". A handler that wants to hand a value on to the next handler (rather than returning it) writes it there —
+ *     otherwise a later handler's `undefined` would overrule it. `ctx` itself is frozen by the registry; `scratch` is not.
+ *
+ * With no package registered this is ONE Map lookup and nothing allocated.
+ *
+ * @param {object} view the unit view (`z`, `hover`, `lift`, `visFacing`, `flying`, `alive`, `info`, …)
+ * @param {number} dt real seconds of this frame @param {object} cam the camera (a `project(x, y, z, out)` object)
+ * @param {number} clock the game clock of this frame @param {number|null} ground the tile top under the unit
+ * @returns {{bodyZ: (number|null), screenX: (number|null), face: number, shadowZ: (number|null)}|null}
+ */
+export function unitMotion(view, dt, cam, clock, ground) {
+  if (!hooks.has('field:unitMotion')) return null;   // no package mounted: one lookup, no object
+  const scratch = { bodyZ: null, screenX: null, face: 0, shadowZ: null };
+  const out = hooks.run('field:unitMotion', null, {
+    view, dt, clock, cam,
+    bodyZ: view.z + view.hover + view.lift,   // the shipped values, for a handler that wants to scale relative to them
+    baseZ: view.z, hover: view.hover, lift: view.lift,
+    ground: Number.isFinite(ground) ? ground : null,
+    scratch,
+  });
+  if (!out || typeof out !== 'object') return scratch;
+  // `undefined` = the handler did not answer (keep the chain note); anything else — `null` included — is an answer
+  const pick = (k) => (out[k] === undefined ? scratch[k] : out[k]);
+  return { bodyZ: pick('bodyZ'), screenX: pick('screenX'), face: pick('face'), shadowZ: pick('shadowZ') };
+}

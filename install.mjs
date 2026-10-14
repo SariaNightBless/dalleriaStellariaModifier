@@ -171,8 +171,16 @@ async function install(root) {
   console.log(`  ║  修改器 ${VERSION_TAG}  ·  面向上游 ${UPSTREAM_TARGET}                ║`);
   console.log(`  ╚══════════════════════════════════════════════════════════╝\n`);
   if (!looksLikeGame(root)) { bad(`${root} 不像游戏目录，拒绝安装`); return; }
-  if (path.resolve(root) === path.resolve(HERE) || path.resolve(HERE).startsWith(path.resolve(root) + path.sep)) {
-    bad('拒绝安装：目标目录包含本包自己'); return;
+  // 约定摆法是**把本包整个放进游戏根**（<游戏根>\<包>\），装到它的上一级 —— 也就是 root 包含本包，
+  // 这是正常的，不再拒绝（曾有一条 "目标目录包含本包自己 → 拒绝" 的护栏，那是"包放在游戏树之外"
+  // 时代的写法，会把默认目标 `..` 直接挡死）。这条路径安全，因为：
+  //   · `files/**` 里只有"游戏根相对路径"，没有任何回指本包的路径，复制不会递归；
+  //   · `--undo` 只动安装记录里列出的那些文件（OURS + patches），本包目录不在其中；
+  //   · 拒绝清单永远留着 `FORBIDDEN_OVERWRITE`（上游同名的文件不许被整份覆盖）。
+  // 只剩一种情况必须拒：把安装目标写成**本包自己**——那里没有 server/index.js，
+  // looksLikeGame 已经先挡了；这里再兜一层，防止将来判据放宽。
+  if (path.resolve(root) === path.resolve(HERE)) {
+    bad('拒绝安装：目标目录就是本包自己'); return;
   }
   console.log(`  游戏目录：${root}\n`);
 
@@ -244,8 +252,10 @@ const clean = (root) => {
 
 const root = findRoot();
 if (has('--audit')) {
-  const up = argOf('--root') || path.resolve(HERE, '..', '..', 'version', 'Stronghold-Protocol');
-  audit(path.resolve(up));
+  // 默认拿**本包的上一级**当"干净上游"试锚点：约定摆法是包放进游戏根（<游戏根>\<包>\），
+  // 所以上一级通常就是一份（或就是那个）游戏根。要试别的版本：`--audit --root <那份上游>`。
+  // ⚠️ 这里不要写任何写死的绝对路径 —— 包会被搬到别的实例 / 别的机器上。
+  audit(path.resolve(argOf('--root') || findRoot() || path.resolve(HERE, '..')));
 } else if (!root) {
   bad('找不到游戏目录。用 --root "D:\\你的游戏目录" 指定');
   process.exitCode = 1;

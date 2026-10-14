@@ -58,14 +58,34 @@ export const THEIRS = Object.freeze({
   'server/index.js': ['server-boot'],               // 扫包 → 合并内容 → 加载 sim → 挂 /api/mods
   'server/http/static.js': ['static-mount'],         // /mods/ 静态挂载
   'server/http/routes.js': ['api-route'],            // /api/mods 分发
-  'server/mods.js': ['updater-rename'],              // 只改一行 import（指向 mods-update.js）
+  // ⚠️ 上游 0.2.4 **没有** server/mods.js（它的 server/ 只有 data / index / lobby / net / packs / update），
+  //    所以这里曾经那条 `'server/mods.js': ['updater-rename']` 是**一代遗留的伪条目**：没有文件可改，
+  //    `patches.mjs` 里也从来没有这条 id。`server/mods.js` 是**我方**文件（见 OURS），它自己 import
+  //    `./mods-update.js`（包下载器；上游的 `server/update.js` 是官方的 `applyPendingUpdate`，名字被它占着，
+  //    见 FORBIDDEN_OVERWRITE）。删掉这条让 THEIRS 与 PATCHES 一一对应。
   'public/js/screens/lobby.js': ['lobby-buttons'],   // 顶栏的 ui:button 宿主
-  'public/js/screens/title.js': ['title-buttons'],   // 标题页的管理按钮 + ui:button 宿主
+  'public/js/screens/title.js': ['title-buttons'],   // 标题页的「模组」按钮 + ui:button 宿主
   'public/index.html': ['stylesheets'],              // 引入 sp-mods.css
   // ---- 战场渲染接缝：上游文件里只有一行 import + 每个接缝一行调用，逻辑全在 files/public/js/mods/render.js ----
   'public/js/render/app.js': ['render-app-hooks'],   // field:event / damage / viewGone / frame / overlay
   'public/js/render/fx/numbers.js': ['render-damage-number'],   // field:damageNumber（allow / text）
-  'public/js/render/units.js': ['render-unit-hud'],  // field:unitBars / enemyBars / chip + STYLE 旋钮（HUD/护盾/受击闪/飞行/倒地/时钟）
+  'public/js/render/units.js': ['render-unit-hud'],  // field:unitBars / enemyBars / chip + STYLE 旋钮（HUD/护盾/受击闪/飞行/倒地/时钟）+ field:attack 的**宣布**
+  'public/js/render/spine.js': ['render-attack-plan'],   // field:attack 的**计划**（windUp / attack 两处；宣布那半在 units.js 那条里）
+  // ---- 模拟接缝（sim:*）：每个钩子一处守卫调用，注册表在 files/server/sim/modlogic.js ----
+  'server/sim/battle/lifecycle.js': ['sim-battle-hooks'],   // sim:battleStart / unitTick / battleEnd
+  'server/sim/ai.js': ['sim-ai-hooks'],              // sim:enemyAI / targets / targetOrder / attackMode / attack / strikeDelay
+  'server/sim/damage.js': ['sim-damage'],            // sim:damage
+  'server/sim/snapshot.js': ['sim-snapshot'],        // sim:attackRhythm / sim:attackAnim（ATTACK 窗口）
+  'server/sim/spec.js': ['sim-content'],             // spec → Battle 透传 extraContent（行为模组的正门）
+  'server/match/match/clientCombat.js': ['sim-extracontent-server'],   // 服务端跑的每一场也带上 sim 模块
+  'public/js/battle/runner.js': ['sim-extracontent-client'],           // 页面自己模拟的那一场同样
+  // ---- AI 决策接缝（bot:*）：注册表在 files/server/match/botlogic.js ----
+  'server/match/bot.js': ['bot-seams'],              // bot:params / bandWeights / cardScore / bondPlan / buyScore / itemScore / refreshValue / lineupScore / layoutParams / rehearsal
+  // ---- 内容与美术：内容包的表、策略/盟约注册表、立绘 / Spine；以及「战场视图就绪」的通知 ----
+  'server/data.js': ['data-merges'],                 // getData() 的默认目录 = 合并后的 .cache/mods/data
+  'server/match/effectsMeta.js': ['meta-installer'],  // globalThis.__SP_MODS_META__（策略 / 盟约 registerMeta）
+  'public/js/assets.js': ['assets-provider'],         // setModAssetProvider（api.assets.registerChars）
+  'public/js/ui/fieldHost.js': ['field-ready'],       // 战场视图就绪 → notifyReady（api.ready / 'ready'）
   // ---- STYLE 旋钮层：上游文件里只有"把字面量交给旋钮店"和"把 9 组名字 re-export 出去"，表全在 files/public/js/mods/style.js ----
   'public/js/render/style.js': ['style-knobs'],      // COLORS / UNIT 变成活对象 + 文件尾 re-export
   'public/js/render/textures.js': ['style-chip'],    // 等级牌图集读 chip.*（含 chip.textGoldTier）+ 写旋钮即重画

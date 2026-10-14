@@ -3,11 +3,14 @@ rem ============================================================================
 rem  uninstall.cmd —— 一键卸载：把游戏还原成没装过本修改器的样子（双击即可）
 rem
 rem  用法：
-rem    uninstall.cmd                          自动找游戏目录 → 核对 → 确认 → 还原
-rem    uninstall.cmd --root "D:\你的游戏目录"   指定游戏目录
+rem    uninstall.cmd                          卸**本包的上一级目录**（把包放进实例里的默认摆法）→ 确认 → 还原
+rem    uninstall.cmd --root "D:\你的游戏目录"   指定别的游戏目录
 rem    uninstall.cmd --root "D:\..." --yes     不问确认，直接还原
 rem    uninstall.cmd --list                    只列出找过的候选目录，不改任何东西
 rem    uninstall.cmd --clean                   还原之后，顺手删掉内容合并缓存 .cache\mods
+rem
+rem  默认目标与 deploy.cmd 同源：包放在 <游戏目录>\<包>\ 里，游戏根就是本包的 `..`。
+rem  装到别处去的那一份（比如用 --root 装的），靠 state\ 里的安装记录认回来。
 rem
 rem  还原是**按安装记录**做的（state\<键>.json + state\backup\）：
 rem    · 上游文件逐字节还原（装完之后又被你改过的那些**不动**，只提示）；
@@ -86,7 +89,7 @@ if defined WANT_UNKNOWN (
 if defined WANT_ROOT if not defined ROOT call :resolve_root
 if defined WANT_ROOT if not defined ROOT (
   echo   [X] --root 后面缺目录（或者路径里有 cmd 不认的引号）。
-  echo       例：uninstall.cmd --root "D:\sp\version\test"
+  echo       例：uninstall.cmd --root "D:\你的游戏目录"
   echo.
   pause
   exit /b 2
@@ -178,7 +181,8 @@ exit /b 1
 
 :no_root
 echo.
-echo   找不到游戏目录，可以现在手输（回车 = 放弃）。例： D:\sp\version\test
+echo   找不到游戏目录。把它手输进来（回车 = 放弃）—— 里面要有 server\index.js、public\index.html、package.json。
+echo   包放进实例里（^<游戏目录^>\dalleriaStellariaModifier1x\）时，默认目标就是它的上一级，不需要手输。
 echo.
 set "ANS="
 set /p "ANS=  游戏目录："

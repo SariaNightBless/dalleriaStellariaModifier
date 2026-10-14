@@ -12,11 +12,18 @@
 //
 // 判定顺序（先给 --root 的独占权，与 install.mjs --root 一致）：
 //   1. --root <目录>          给了就只看它，不通过就报错，绝不偷偷换一个
-//   2. %SP_GAME_ROOT%         环境变量
-//   3. state/last-root.txt    上次装过的目录（本包自己记的，见 deploy.cmd）
-//   4. state/*.json           安装记录里的 root —— --undo 必须认这个，否则卸不掉
-//   5. 包里包外的常见摆法     「包在游戏里」/「游戏在包里」/「与实例并排」
-//   6. 放弃：把找过的候选打到 stderr，退出 1
+//   2. **本包的上一级目录**    ← **默认安装目标就是它**：包放在实例里（<实例>\<包>\），
+//                              实例根就是 `..`。这是唯一的"约定地址"，且是相对包自己算的，
+//                              换机器 / 换实例目录名都不用改任何东西。
+//   3. %SP_GAME_ROOT%         环境变量（想临时指到别处时用）
+//   4. state/last-root.txt    deploy.cmd 上次装成功的目录（开发机上的便捷记忆）
+//   5. state/*.json           安装记录里的 root —— **卸载必须认这个**，否则卸不掉装过的那一份
+//   6. 包里包外的其它常见摆法 「包在游戏里更深处」/「游戏在包里」/「并排」
+//   7. 放弃：把找过的候选打到 stderr，退出 1
+//
+// ⚠️ 这里**不许写任何开发机的绝对路径**（曾经有过 `..\version\test`、`..\version\modified_0`
+//    这种候选）：包一旦被搬到别的实例里，那些地址会把安装目标悄悄指到另一份实例上。
+//    要认某个具体目录，用 --root / SP_GAME_ROOT，或让 deploy.cmd 自己记进 last-root.txt。
 //
 // --out <文件>：把**机器要读的那一行**写进文件，stdout 保持干净。给 .cmd 用 ——
 //   在 for /f 里收命令输出 + 命令里带重定向，引号要写成 `cmd /c "… 2^>nul"` 才转得过去，
@@ -88,26 +95,24 @@ function rootsFromState() {
   return out;
 }
 
-/** 「包放在哪」推断出来的候选：包在游戏里、游戏在包里、与游戏并排。 */
+/** 「包放在哪」推断出来的候选：**先看 `..`**（包放进实例的默认摆法），再看别的常见摆法。 */
 function layouts() {
-  const up = [PKG, path.dirname(PKG), path.resolve(PKG, '..', '..')];
-  const down = [
-    path.join(PKG, 'game'),                     // <包>/game/
-    path.resolve(PKG, '..', 'game'),            // <某个目录>/<包>/../game
-    path.resolve(PKG, '..', 'version', 'test'), // 开发机常见：modloader/<包> 与 version/test 并排
-    path.resolve(PKG, '..', 'version', 'modified_0'),
+  const DOWN = path.dirname(PKG);              // `..`：包放进实例里时，它就是实例根
+  const UP = path.dirname(DOWN);               // `../..`：包多套了一层时
+  const out = [
+    { dir: DOWN, why: '本包的上一级目录（..）—— 包放进实例里的默认目标' },
+    { dir: UP, why: '本包的上两级目录（../..）' },
+    { dir: path.resolve(PKG, '..', '..', '..'), why: '再往上一级' },
+    { dir: path.join(PKG, 'game'), why: '本包里的 game' },
+    { dir: path.join(DOWN, 'game'), why: '上一级里的 game' },
   ];
-  const named = ['Stronghold-Protocol', 'game', 'app']
-    .flatMap((n) => [path.resolve(PKG, '..', '..', 'version', n), path.resolve(PKG, '..', n)]);
   const seen = new Set();
-  const out = [];
-  for (const dir of [...up, ...down, ...named]) {
-    const key = dir.toLowerCase();
-    if (seen.has(key)) continue;
+  return out.filter((c) => {
+    const key = c.dir.toLowerCase();
+    if (seen.has(key)) return false;
     seen.add(key);
-    out.push({ dir, why: '按包的位置推断' });
-  }
-  return out;
+    return true;
+  });
 }
 
 const candidates = [];
@@ -115,11 +120,14 @@ const explicit = argOf('--root');
 if (explicit) {
   candidates.push({ dir: path.resolve(explicit), why: '--root 指定（独占）' });
 } else {
+  // ⚠️ 顺序有讲究：`..` 排在"上次装过哪"的前面。
+  //    反过来的话，一段陈旧记录（比如开发机上留下的 D:\sp\version\test）会盖过真正的安装目标，
+  //    于是"包已经放进这个实例了、脚本却装去另一个目录"。
+  candidates.push(...layouts());
+  if (process.env.SP_GAME_ROOT) candidates.push({ dir: path.resolve(process.env.SP_GAME_ROOT), why: '环境变量 SP_GAME_ROOT' });
   const saved = firstLine(path.join(STATE, 'last-root.txt'));
   if (saved) candidates.push({ dir: path.resolve(saved), why: '上次装过的目录 state/last-root.txt' });
-  if (process.env.SP_GAME_ROOT) candidates.push({ dir: path.resolve(process.env.SP_GAME_ROOT), why: '环境变量 SP_GAME_ROOT' });
   candidates.push(...rootsFromState());
-  candidates.push(...layouts());
 }
 
 const graded = candidates.map((c) => ({ ...c, grade: grade(c.dir) }));
@@ -165,7 +173,7 @@ process.stderr.write('找过这些地方：\n');
 if (graded.length === 0) process.stderr.write('  （一个候选都没有）\n');
 for (const c of graded) process.stderr.write(`  [${c.grade}] ${c.dir}   （${c.why}）\n`);
 process.stderr.write('\n办法：\n');
-process.stderr.write('  1) 用 --root 指过去，例如：  deploy.cmd --root "D:\\你的游戏目录"\n');
-process.stderr.write('  2) 设环境变量 SP_GAME_ROOT\n');
-process.stderr.write('  3) 把本包直接放进游戏目录里（安装器会认出来）\n');
+process.stderr.write('  1) 把本包放进游戏目录里（<游戏目录>\\<包>\\，默认就装到它的上一级）——推荐\n');
+process.stderr.write('  2) 用 --root 指过去，例如：  deploy.cmd --root "D:\\你的游戏目录"\n');
+process.stderr.write('  3) 设环境变量 SP_GAME_ROOT\n');
 process.exit(1);

@@ -1,0 +1,217 @@
+{
+  "root": "D:\\sp\\version\\Stronghold-Protocol",
+  "installedAt": "2026-10-13T09:08:40.401Z",
+  "loaderVersion": "1.0.0",
+  "copies": {
+    "public/js/mods.js": {
+      "after": "d49b9428ba2e308645f28fb6a362364309f0e3ccce0112d58261e0c67c889c4d"
+    },
+    "public/js/mods/assets.js": {
+      "after": "44a98fdcf4eea162cf2d4dde18acfe7617345e83839cadd4a7137535d659f04c"
+    },
+    "public/js/mods/content.js": {
+      "after": "58d8dc0d05dcb1ddaa5a5d3b60a18a92b57903fd8c25edd6abe3e8d1cdf8ad88"
+    },
+    "public/js/mods/render.js": {
+      "after": "ab8691846e94f1e4e3f886c6b52ca7db1c3732b00b2db731538b2785d463206d"
+    },
+    "public/js/mods/resolve.js": {
+      "after": "82722ec3e8fc34f23deba01de19dee49d266a49fdc239666bf41a3d6a837e14a"
+    },
+    "public/js/mods/sim.js": {
+      "after": "2a9e2e40c9df5635ae4b68b0f2997806f0eb1cbcf0e9dedff5e9c763531ebd00"
+    },
+    "public/js/mods/style.js": {
+      "after": "e174ec09636a48748edbe991a78106ae35c80fc4d5977ae71841db19c894ee34"
+    },
+    "public/js/mods/tables.js": {
+      "after": "a644385df374f731fafda056c9339cae108848310613aac49a61b09ce9082727"
+    },
+    "public/js/mods/timing.js": {
+      "after": "c7b90b6e031e46550c3ec311cda14660eed341389a3211e39be24196a829f119"
+    },
+    "public/js/mods/ui.js": {
+      "after": "5de048f3951a105928fd011556a3df52065e58f9f3cc2d819ca5a0a4e7d8575c"
+    },
+    "public/mods.html": {
+      "after": "d8e2c593879933a6d8f6d5fd857aeda075be9b8954d97b9a59466bce33d6db59"
+    },
+    "public/css/sp-mods.css": {
+      "after": "553d5ed9bc744a8f8bacd23df6742f6576121cc32a317e363f7166852553f22f"
+    },
+    "public/js/ui/modsButton.js": {
+      "after": "5fc955ac1d11fb9d6fea53a8fbe421cef5d1510ad4a2b51637dd33247dec5b27"
+    },
+    "public/js/ui/modButtons.js": {
+      "after": "7c0b3669fb017da480fa2928088285e355c4721ccea4a360a78cbd8c490213e3"
+    },
+    "server/mods.js": {
+      "after": "caf302875d7047d6f56974e9a70a7308773f526eba9fb99bbc6ea76f9b026d20"
+    },
+    "server/modapi.js": {
+      "after": "da209ce37498faced84a1783e40b67c2e81047541d8b76caaabbc0de8b209ccb"
+    },
+    "server/loader.js": {
+      "after": "5371312d2684beb8ee776c602ee2030f958b02675b36de00a767474042fe4c43"
+    },
+    "server/manifest.js": {
+      "after": "1eb5e54146555d3b870ecf2a83e00dfbcec1b90558ceb1c57df4d896b59e6451"
+    },
+    "server/content.js": {
+      "after": "364e0da498f58a7f8024c33e6322b37fa87098edbf29838e3d396fc7f77a5524"
+    },
+    "server/mods-update.js": {
+      "after": "9cfd9cd10a721fe253c8c350e2d0863f1f6b93602e414f8a99748bd65e4892a8"
+    },
+    "server/match/botlogic.js": {
+      "after": "e575ccf994676cf8c0e36892c8d6389e54dde5b21b264b429a9c47201c1c1b4d"
+    },
+    "server/sim/modlogic.js": {
+      "after": "5ad78aaf1cde5ff11b3d773f2a6396f3bdba7b8c211d7d953705f2670af8d7af"
+    },
+    "shared/hooks.js": {
+      "after": "f7078a5dc62d59f187cdc4055ffedd0855228d7de3f17838e91a286443cee133"
+    },
+    "shared/content.js": {
+      "after": "596bcfe0a0152dacd2832af50c8afbe52a5e2038e74140fd9052fed14a8903bc"
+    }
+  },
+  "patched": {
+    "public/js/main.js": {
+      "after": "9bfb8b7a1039c53baa36ba61ee176ace7128c5096d64e4b56002e15d2ab692ad",
+      "what": "首帧之前加载模组包（ui:button / api.ui / 内容包的前提）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/public/js/main.js"
+    },
+    "server/index.js": {
+      "after": "e02fe57f17daf254d8e1d767272312f643122c203867a582dadcc04853828832",
+      "what": "服务端启动顺序（先扫模组再读表）+ 把 modsDir / modsApi 交出去",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/server/index.js"
+    },
+    "server/http/static.js": {
+      "after": "72532bd3ac7e92f8e9ed963d776eba65d8bbdc4656bd62adc17dba2753a86ce9",
+      "what": "/mods/ 静态挂载（排在 / 之前）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/server/http/static.js"
+    },
+    "server/http/routes.js": {
+      "after": "b2b4c2690dae6613357f5d990e0598f0ffc6ba8b99152e18f55a6c9484445cf1",
+      "what": "/api/mods* 分发给修改器（在「非 GET/HEAD → 405」之前，否则 POST 端点全废）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/server/http/routes.js"
+    },
+    "public/js/screens/lobby.js": {
+      "after": "cb28bfb0b6ec5542641f0e1845cbe0e17752325c7fce59c0bceb432033746974",
+      "what": "顶栏的 ui:button 宿主（slot 'lobby.topbar'，位于干员调配与博士名片之间）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/public/js/screens/lobby.js"
+    },
+    "public/index.html": {
+      "after": "a14568b9e243c0aef9a53795bc8076403600cd4a195c2901410dc87446208dd8",
+      "what": "引入 sp-mods.css（管理器与模组按钮样式）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/public/index.html"
+    },
+    "public/js/render/app.js": {
+      "after": "77c944cc3f0b6ce4efaf85277c82ed84f55ddaa480fc719576edfb1202e46e22",
+      "what": "战场接缝 5 条：field:event / field:damage / field:viewGone / field:frame / field:overlay",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/public/js/render/app.js"
+    },
+    "public/js/render/fx/numbers.js": {
+      "after": "0a777d0cfc83661070d79a72a2fd66a9646531bba45dd81df26d077ae4b38771",
+      "what": "跳字接缝：field:damageNumber 的 kind: 'allow' 与 kind: 'text'（text / color / life / big）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/public/js/render/fx/numbers.js"
+    },
+    "public/js/render/units.js": {
+      "after": "c60915952336361933f72ca0bb7285fc96e6f6cde11a6f060dfcf49078164609",
+      "what": "HUD 接缝（unitBars / enemyBars / chip + unitMotion）+ STYLE 旋钮（HUD/护盾/隐匿/受击闪/飞行/倒地/时钟盘面）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/public/js/render/units.js"
+    },
+    "server/sim/ai.js": {
+      "after": "8ae7b9a3213de7c1cde6ac1b7d4b6e789ac1258fc18c377dd61cea18f4614817",
+      "what": "AI 接缝 6 条：sim:enemyAI / sim:targets / sim:targetOrder / sim:attackMode（我方+敌人）/ sim:attack / sim:strikeDelay",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/server/sim/ai.js"
+    },
+    "public/js/render/style.js": {
+      "after": "4bf6209f415e834d4e01ccebac708c178a80ea6f84c102dc38e05b32224e6f83",
+      "what": "STYLE 旋钮层：COLORS / UNIT 变成活对象 + 9 组旋钮面从 public/js/mods/style.js re-export",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/public/js/render/style.js"
+    },
+    "public/js/render/textures.js": {
+      "after": "ed689beee86f8c06ea5843f225c9baf2d0a4d94890a7ec7e8ee186eb3e4aa769",
+      "what": "等级牌图集读 chip.* 旋钮（含 chip.textGoldTier：精锐牌数字保持该等级的 ink）+ 写旋钮即重画",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/public/js/render/textures.js"
+    },
+    "public/js/render/fx/fonts.js": {
+      "after": "0679c667cade0da6b62ad204ec529cddb64f382273c050b9fb19a4266bf7904a",
+      "what": "跳字字模读 dmg.* 旋钮（面栈 / 单色 / 描边 / 五档填充色）+ 新增 rebuildDamageFonts()",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/public/js/render/fx/fonts.js"
+    },
+    "public/js/render/fx.js": {
+      "after": "588af1d7e86ad34898c7b7bc76748d206027051130e9d5789ac56ea6907ec898",
+      "what": "barrel 转出 rebuildDamageFonts（fx/fonts.js 的新导出）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/public/js/render/fx.js"
+    },
+    "public/js/render/fx/system.js": {
+      "after": "29164fb4a34d66a443caa3c8a783da1178288042a98bc5242d41df2a60858689",
+      "what": "FxSystem.rebuildDamageFonts()：转发给 fx/fonts.js 并丢掉在飞/池里的数字",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/public/js/render/fx/system.js"
+    },
+    "server/sim/battle/lifecycle.js": {
+      "after": "ecd8b5864957610000413d54f889f16fabad7e37cef7c27d86f56e4033df42b0",
+      "what": "战斗生命周期接缝：sim:battleStart / sim:unitTick（双方，每 tick）/ sim:battleEnd",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/server/sim/battle/lifecycle.js"
+    },
+    "server/sim/damage.js": {
+      "after": "2154e517e1fdccda4fba90ff20bb0f8461e4a30c0b2231639d771c5e7afe2dd3",
+      "what": "伤害接缝：sim:damage（每一次进入主管线的命中，可改 dmg.mul / amount / type，或 dmg.cancel 取消）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/server/sim/damage.js"
+    },
+    "server/sim/snapshot.js": {
+      "after": "56445853f792b2c831fd1b9c5b0166bf713727e63207d1432febcfc8ac7982a7",
+      "what": "快照接缝：sim:attackRhythm（flags 16…31 位的攻击节奏）+ sim:attackAnim（ATTACK 窗口长度）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/server/sim/snapshot.js"
+    },
+    "server/sim/spec.js": {
+      "after": "0a97fedacf1b7683ac11757c5fd87b28944d1e9a2f27c4196b0871f599c05afe",
+      "what": "行为模组的正门：spec → Battle 透传 extraContent（installContent 会 install(battle) 每一个）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/server/sim/spec.js"
+    },
+    "server/match/match/clientCombat.js": {
+      "after": "73852c9ff4a702a8c4d049ed8a4110be5c394a3280c0d79e16a32c845763bda3",
+      "what": "服务端跑的每一场（接管重算 / 校验）也拿到行为模组的 sim 模块（否则两边的 resultDigest 不一致）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/server/match/match/clientCombat.js"
+    },
+    "public/js/battle/runner.js": {
+      "after": "5f88dbfac79d2a66bd7135afc1bea47d757c139468a53527fe9e95c97faf619b",
+      "what": "页面自己模拟的那一场也拿到行为模组的 sim 模块（页面 import /sim/**，与服务器各注册一次）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/public/js/battle/runner.js"
+    },
+    "server/data.js": {
+      "after": "9a2f4f05eaf7e068f23fc477ead87eaa58392482d544b52fd6ef546737ce217f",
+      "what": "内容包合并目录成为 getData() 的默认（server/loader.js 的文件头就是照这条写的）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/server/data.js"
+    },
+    "server/match/effectsMeta.js": {
+      "after": "6b13d6c504c3312ebb41d273b59533e1cad52889fa4974d67823c600c54600e1",
+      "what": "策略 / 盟约 / 特质 / 装备 的注册表接缝（globalThis.__SP_MODS_META__，每次 createRegistry 都问一次）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/server/match/effectsMeta.js"
+    },
+    "public/js/assets.js": {
+      "after": "ea5d004e065d75cc392f91ce64cfa2b669831a902b6714fc8c8a0657684fc289",
+      "what": "美术门：setModAssetProvider()（内容包贡献的立绘 / Spine 合进 manifest 查询；游戏自己的条目永远优先）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/public/js/assets.js"
+    },
+    "public/js/ui/fieldHost.js": {
+      "after": "d26e1bd65ce768e090212df6635122541ab60b4300460363884ec2df120b62ac",
+      "what": "战场视图就绪的通知（api.ready / api.on('ready') 的前提）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/public/js/ui/fieldHost.js"
+    },
+    "public/js/screens/title.js": {
+      "after": "0f87ba5e3dafa51623145b7fcde6672b0ad2d508599897a101cc4843c3bcf83a",
+      "what": "标题页的「模组」按钮（打开 /mods.html）+ ui:button 宿主（slot 'title.actions'）",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/public/js/screens/title.js"
+    },
+    "server/match/bot.js": {
+      "after": "ac4a73376c88b612f6246ec6305953cca50f8457f46731c0b1ee39dc01559f80",
+      "what": "AI 决策接缝：bot:params / bandWeights / cardScore / bondPlan / buyScore / itemScore / refreshValue / lineupScore / layoutParams / rehearsal + botParam 旋钮",
+      "backup": "state/backup/ZDpcc3BcdmVyc2lvblxzdHJv/server/match/bot.js"
+    }
+  },
+  "generated": []
+}

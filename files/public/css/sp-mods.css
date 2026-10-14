@@ -41,3 +41,22 @@
 .modmm__t th { opacity: .5; font-weight: 500; font-size: .115rem; }
 .modmm__t tr.is-off td { color: var(--gold); }
 .modmm__acts { margin-top: .1rem; }
+
+/* ---- ui:slot 的接缝本身（api.ui.slots；实现在 js/mods/ui.js） ----
+ * 一个接缝就是**游戏自己在标记的**元素：`data-prts-slot="<名字>"`（当前唯一的一处是 rooms 之外的
+ * `title.actions`，见 public/js/screens/title.js 的接线）。这里只管两件与外观无关的事：
+ *
+ *   · 接缝是合法容器（min-width: 0，免得它把 grid / flex 的子项撑破）；
+ *   · `slots.hide()` 真的不显示 —— 加载器给元素打上 `data-prts-hidden`，**这条规则**负责画不出来。
+ *     为什么走属性而不是内联 display:none：宿主渲染出元素与脚本藏掉它之间会有一帧是看得见的
+ *     （实测就是"抬头闪一下"）；属性由脚本在同一个任务里打上，绘制发生在任务之后，所以那一帧就已经不显示了
+ *     （内联样式也一起写，防止游戏自己的规则用更高特异性压过这条 —— 见 ui.js 的 hide 分支）。
+ *
+ * ⚠️ 这一节原来在 v1 的 `sp-mods-slots.css` 里（v1 用一条 index.html 补丁引入它）。v2 不带那个文件，
+ *    于是 `slots.hide()` / `hideWhen` 会打属性却没有任何规则生效 —— 两半缺一不可，所以规则搬到这里，
+ *    而这里由既有的 `stylesheets` 补丁引入，不需要第二条 index.html 接线。
+ */
+[data-prts-slot] { min-width: 0; }
+[data-prts-hidden] { display: none !important; }
+/* 空接缝（只有加载器的占位 <span>）不占位、不吃点击。 */
+[data-prts-slot]:not(:has(> :not([data-prts-slot-ph]))) { pointer-events: none; }

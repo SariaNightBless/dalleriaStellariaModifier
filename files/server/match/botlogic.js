@@ -14,6 +14,7 @@
 //   bot:cardScore       (score, ctx)         → the score of one 机变 card (botPickCard)
 //   bot:bondPlan        ({focus, second})    → the盟约 the bot builds around (bondPlan)
 //   bot:buyScore        (score, ctx)         → the score of acquiring one copy of chess `id` (buyScore)
+//   bot:itemScore       (score, ctx)         → the score of taking one shop ITEM (the item half of buyScore)
 //   bot:refreshValue    (value, ctx)         → the expected value of one shop refresh (refreshValue)
 //   bot:lineupScore     (score, ctx)         → the score of one deployed set (lineupScore)
 //   bot:layoutParams    (params, ctx)        → the exposure model's tunables for this round (planLayout)
@@ -22,7 +23,8 @@
 // `ctx` always carries `{ m, ps, mod }` plus whatever that decision point knows (`id`, `card`, `ctx`, `set`, `chosen`…).
 //
 // THE POLICY KNOBS (`botParam(name, fallback)`, answered by `bot:params`)
-//   mergeHit pairHit maxRefreshes buyFullMin levelTarget   —— 每个都对应 bot.js 里同名的出厂常量
+//   mergeHit pairHit maxRefreshes buyFullMin levelTarget maxPairs armorWeight benchBudget
+//   —— 每个都对应 bot.js 里同名的出厂常量（`bot.js` 的 `botParam('…', 出厂常量)` 逐个写明）。
 //
 // DETERMINISM
 //   A bot is part of the match: its decisions consume `m.rngBots()` and every peer (and the server's audit) expects the
@@ -32,7 +34,7 @@
 
 /** Hook kinds this registry serves (kept in sync with `shared/hooks.js` by name only). */
 export const BOT_HOOKS = Object.freeze([
-  'bot:params', 'bot:bandWeights', 'bot:cardScore', 'bot:bondPlan', 'bot:buyScore',
+  'bot:params', 'bot:bandWeights', 'bot:cardScore', 'bot:bondPlan', 'bot:buyScore', 'bot:itemScore',
   'bot:refreshValue', 'bot:lineupScore', 'bot:layoutParams', 'bot:rehearsal',
 ]);
 
